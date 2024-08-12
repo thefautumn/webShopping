@@ -1,34 +1,35 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFacebookSquare, faInstagram, faYoutube } from '@fortawesome/free-brands-svg-icons'; // Import các biểu tượng cần dùng
+import { faFacebookSquare, faInstagram, faYoutube } from '@fortawesome/free-brands-svg-icons';
+import { ROUTES } from '../constants/routes';
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-100 py-12">
+    <footer className="bg-gray-100 py-12 overflow-x-auto" style={{ minWidth: '1024px' }}>
       <div className="container mx-auto px-4 grid grid-cols-5 gap-8">
         <div>
           <h3 className="text-lg font-bold mb-4">Về Uniqlo</h3>
           <ul className="space-y-2">
-            <li><a href="/about" className="text-gray-800 hover:text-black">Thông tin</a></li>
-            <li><a href="/stores" className="text-gray-800 hover:text-black">Danh sách cửa hàng</a></li>
-            <li><a href="/careers" className="text-gray-800 hover:text-black">Cơ Hội Nghề Nghiệp</a></li>
+            <li><a href={ROUTES.ABOUT} className="text-gray-800 hover:text-black">Thông tin</a></li>
+            <li><a href={ROUTES.STORES} className="text-gray-800 hover:text-black">Danh sách cửa hàng</a></li>
+            <li><a href={ROUTES.CAREERS} className="text-gray-800 hover:text-black">Cơ Hội Nghề Nghiệp</a></li>
           </ul>
         </div>
         <div>
           <h3 className="text-lg font-bold mb-4">Trợ giúp</h3>
           <ul className="space-y-2">
-            <li><a href="/faq" className="text-gray-800 hover:text-black">FAQ</a></li>
-            <li><a href="/returns-policy" className="text-gray-800 hover:text-black">Chính sách trả hàng</a></li>
-            <li><a href="/privacy-policy" className="text-gray-800 hover:text-black">Chính sách bảo mật</a></li>
-            <li><a href="/accessibility" className="text-gray-800 hover:text-black">Tiếp cận</a></li>
+            <li><a href={ROUTES.FAQ} className="text-gray-800 hover:text-black">FAQ</a></li>
+            <li><a href={ROUTES.RETURNS_POLICY} className="text-gray-800 hover:text-black">Chính sách trả hàng</a></li>
+            <li><a href={ROUTES.PRIVACY_POLICY} className="text-gray-800 hover:text-black">Chính sách bảo mật</a></li>
+            <li><a href={ROUTES.ACCESSIBILITY} className="text-gray-800 hover:text-black">Tiếp cận</a></li>
           </ul>
         </div>
         <div>
           <h3 className="text-lg font-bold mb-4">Tài khoản</h3>
           <ul className="space-y-2">
-            <li><a href="/membership" className="text-gray-800 hover:text-black">Tư cách thành viên</a></li>
-            <li><a href="/profile" className="text-gray-800 hover:text-black">Hồ sơ</a></li>
-            <li><a href="/coupons" className="text-gray-800 hover:text-black">Coupons</a></li>
+            <li><a href={ROUTES.MEMBERSHIP} className="text-gray-800 hover:text-black">Tư cách thành viên</a></li>
+            <li><a href={ROUTES.PROFILE} className="text-gray-800 hover:text-black">Hồ sơ</a></li>
+            <li><a href={ROUTES.COUPONS} className="text-gray-800 hover:text-black">Coupons</a></li>
           </ul>
         </div>
         <div>
@@ -36,24 +37,24 @@ const Footer = () => {
           <p className="text-gray-800 mb-4">
             Đăng ký ngay và là người đầu tiên nắm được thông tin khi có mặt hàng mới, khuyến mãi, các sự kiện sắp diễn ra tại cửa hàng và nhiều thông tin hữu ích khác.
           </p>
-          <a href="/subscribe" className="text-blue-500 font-semibold hover:underline">ĐĂNG KÝ NGAY</a>
+          <a href={ROUTES.SUBSCRIBE} className="text-blue-500 font-semibold hover:underline">ĐĂNG KÝ NGAY</a>
         </div>
         <div>
           <h3 className="text-lg font-bold mb-4">Tài khoản xã hội UNIQLO</h3>
           <div className="flex space-x-4">
-            <a href="https://facebook.com" className="text-gray-800 hover:text-black">
+            <a href={ROUTES.FACEBOOK} className="text-gray-800 hover:text-black">
               <FontAwesomeIcon icon={faFacebookSquare} size="2x" />
             </a>
-            <a href="https://instagram.com" className="text-gray-800 hover:text-black">
+            <a href={ROUTES.INSTAGRAM} className="text-gray-800 hover:text-black">
               <FontAwesomeIcon icon={faInstagram} size="2x" />
             </a>
-            <a href="https://youtube.com" className="text-gray-800 hover:text-black">
+            <a href={ROUTES.YOUTUBE} className="text-gray-800 hover:text-black">
               <FontAwesomeIcon icon={faYoutube} size="2x" />
             </a>
           </div>
         </div>
       </div>
-      <div className="mt-12 text-center text-gray-600"> {/* Tăng khoảng cách từ phần trên */}
+      <div className="mt-12 text-center text-gray-600">
         <p className="text-sm">&copy; 2024 UNIQLO VIETNAM CO., LTD. Bảo lưu mọi quyền.</p>
         <p className="text-sm mt-2">
           Tên công ty: UNIQLO VIETNAM CO., LTD. Giấy chứng nhận đăng ký doanh nghiệp số: 0315304731, đăng ký lần đầu ngày 02/10/2018, đăng ký thay đổi lần thứ ba ngày 23/09/2019
