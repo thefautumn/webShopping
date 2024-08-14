@@ -9,11 +9,11 @@ export const ROUTES = {
     SEARCH: '/search',
     CART: '/cart',
     FAVORITE: '/favorite',
+    PROFILE: '/profile',
   
     //Content
     PRODUCTDETAIL: '/products',
     // Footer
-    PROFILE: '/profile',
     FAQ: '/faq',
     RETURNS_POLICY: '/returns-policy',
     PRIVACY_POLICY: '/privacy-policy',

@@ -7,6 +7,7 @@ import ShopPage from './pages/Shop';
 import ProductDetail from './pages/ProductDetail';
 import CartPage from './pages/Cart';
 import FavoritePage from './pages/Favorite';
+import Profile from './pages/Profile';
 import { ROUTES } from './constants/routes'; // Make sure the path is correct
  
 function App() {
@@ -20,6 +21,7 @@ function App() {
           <Route path={ROUTES.PRODUCTDETAIL} element ={<ProductDetail/>} />
           <Route path={ROUTES.CART} element ={<CartPage/>} />
           <Route path={ROUTES.FAVORITE} element ={<FavoritePage/>} />
+          <Route path={ROUTES.PROFILE} element ={<Profile/>} />
 
           {/* Add more routes here as needed */}
         </Routes>
