@@ -2,13 +2,13 @@ export const ROUTES = {
     // Header
     HOME: '/',
     SHOP: '/shop',
-    FEATURES: '/features',
+    MALE: '/male',
     USER: '/user',
-    ABOUT: '/about',
+    FEMALE: '/female',
     CONTACT: '/contact',
     SEARCH: '/search',
     CART: '/cart',
-    WISHLIST: '/wishlist',
+    FAVORITE: '/favorite',
   
     //Content
     PRODUCTDETAIL: '/products',

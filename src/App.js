@@ -5,9 +5,10 @@ import Footer from './components/Footer';
 import Home from './pages/Home';
 import ShopPage from './pages/Shop'; 
 import ProductDetail from './pages/ProductDetail';
+import CartPage from './pages/Cart';
+import FavoritePage from './pages/Favorite';
 import { ROUTES } from './constants/routes'; // Make sure the path is correct
-import LoginModal from './components/LoginModal';
-
+ 
 function App() {
   return (
     <Router>
@@ -17,6 +18,9 @@ function App() {
           <Route path={ROUTES.HOME} element={<Home />} />
           <Route path={ROUTES.SHOP} element={<ShopPage />} />
           <Route path={ROUTES.PRODUCTDETAIL} element ={<ProductDetail/>} />
+          <Route path={ROUTES.CART} element ={<CartPage/>} />
+          <Route path={ROUTES.FAVORITE} element ={<FavoritePage/>} />
+
           {/* Add more routes here as needed */}
         </Routes>
         <Footer />
