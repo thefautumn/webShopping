@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { loginUser } from '../services/authService'; // Import API loginUser
-import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer và toast từ react-toastify
-import 'react-toastify/dist/ReactToastify.css'; // Import CSS của react-toastify
+import { loginUser } from '../services/authService'; 
+import { ToastContainer, toast } from 'react-toastify'; 
+import 'react-toastify/dist/ReactToastify.css';  
 
 const LoginModal = ({ onClose, onRegister, onLoginSuccess }) => {
   const modalRef = useRef();

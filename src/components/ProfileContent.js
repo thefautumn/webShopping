@@ -1,11 +1,37 @@
-// src/components/ProfileContent.js
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Orders from './OrderHistory';
 import AccountSettings from './AccountSetting';
-// Import thêm các component khác nếu cần
+import { getUserById } from '../services/userService'; // Import hàm getUserById
 
-const ProfileContent = ({ activeSection, user }) => {
+const ProfileContent = ({ activeSection, userId }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userData = await getUserById(userId);
+        setUser(userData);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message || 'Failed to load user data');
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, [userId]);
+
   const renderContent = () => {
+    if (loading) {
+      return <p>Loading...</p>;
+    }
+
+    if (error) {
+      return <p className="text-red-500">{error}</p>;
+    }
+
     switch (activeSection) {
       case 'profile':
         return (
@@ -41,17 +67,12 @@ const ProfileContent = ({ activeSection, user }) => {
                 <p>{user.gender}</p>
               </div>
             </div>
-            <div className="mt-8">
-              <h3 className="font-bold">MEMBERSHIP BARCODE</h3>
-              <img src="/path/to/barcode.png" alt="Membership Barcode" className="mb-4"/>
-              <button className="bg-black text-white py-2 px-4 rounded">PRINT BARCODE</button>
-            </div>
           </div>
         );
       case 'orders':
-        return <Orders />;
+        return <Orders user={user} />;
       case 'accountSettings':
-        return <AccountSettings />;
+        return <AccountSettings userId={userId} />;
       default:
         return <div>Select a section from the sidebar</div>;
     }

@@ -23,15 +23,14 @@ const Sidebar = ({ setActiveSection }) => {
     { id: 'profile', label: 'Profile', icon: faUser },
     { id: 'accountSettings', label: 'Setting Account', icon: faCog },
     { id: 'orders', label: 'Order history', icon: faBox },
-    { id: 'contact', label: 'Contact', icon: faComments },
     { id: 'reviews', label: 'Review history', icon: faStar },
     { id: 'changePassword', label: 'Change my password', icon: faEdit },
     { id: 'logout', label: 'Đăng xuất', icon: faSignOutAlt },
   ];
 
   return (
-    <div className="w-64 p-4 bg-gray-50 mt-10 border-solid border-gray-300 rounded-lg shadow-sm">
-      <h1 className="text-3xl font-bold py-5 text-center bg-white-100 rounded-t-lg">Membership</h1>
+    <div className="w-72 p-4 bg-white-50 mt-10 border-solid border-gray-300 rounded-lg shadow-sm">
+      <h1 className="text-3xl font-bold py-5 text-center bg-white-100 rounded-t-lg">PROFILE SETTINGS</h1>
       <ul className="space-y-2">
         {menuItems.map((item, index) => (
           <li
