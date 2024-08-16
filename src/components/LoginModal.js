@@ -8,8 +8,7 @@ const LoginModal = ({ onClose, onRegister, onLoginSuccess }) => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
-
+ 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {

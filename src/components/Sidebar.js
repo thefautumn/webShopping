@@ -6,7 +6,6 @@ import {
   faCog,
   faStar,
   faSignOutAlt,
-  faComments,
   faEdit,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';

@@ -1,16 +1,40 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ProductList from '../components/ProductList';
-
-const products = [
-  { id: 1, name: 'Esprit Ruffle Shirt', price: '$16.64', image: 'https://image.uniqlo.com/UQ/ST3/vn/imagesgoods/476248/item/vngoods_58_476248.jpg?width=320' },
-  { id: 2, name: 'Herschel supply', price: '$35.31', image: 'https://image.uniqlo.com/UQ/ST3/vn/imagesgoods/465191/item/vngoods_56_465191.jpg?width=320' },
-  { id: 3, name: 'Only Check Trouser', price: '$25.50', image: 'https://image.uniqlo.com/UQ/ST3/vn/imagesgoods/467363/item/vngoods_69_467363.jpg?width=320' },
-  { id: 4, name: 'Classic Trench Coat', price: '$75.00', image: 'https://image.uniqlo.com/UQ/ST3/vn/imagesgoods/473160/item/vngoods_18_473160.jpg?width=320' },
-];
+import { getProducts } from '../services/productService';
+import { ROUTES } from '../constants/routes';
+import { useNavigate } from 'react-router-dom';
 
 const ProductOverview = () => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate(); // Initialize useNavigate
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const data = await getProducts();
+        console.log(data); // Add this line to check the data
+        setProducts(data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message || 'Failed to fetch products');
+        setLoading(false);
+      }
+    };
+  
+    fetchProducts();
+  }, []);
+  
+  const handleSeeMore = () => {
+    navigate(ROUTES.SHOP); // Navigate to the shop page when the button is clicked
+  };
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
+
   return (
-    <div className="container mx-auto px-4 py-12 overflow-x-auto" style={{ minWidth: '1024px' }}> {/* Thêm overflow-x-auto */}
+    <div className="container mx-auto px-4 py-12 overflow-x-auto" style={{ minWidth: '1024px' }}>
       <h2 className="text-3xl font-bold mb-6">Product Overview</h2>
       <div className="flex justify-end mb-4">
         <div className="flex items-center">
@@ -25,7 +49,7 @@ const ProductOverview = () => {
       </div>
       <ProductList products={products} />
       <div className="flex justify-center mt-8">
-        <button className="bg-gray-200 px-6 py-2 rounded">Load More</button>
+        <button onClick={handleSeeMore}>See More</button> {/* Attach the click handler */}
       </div>
     </div>
   );

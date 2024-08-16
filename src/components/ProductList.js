@@ -6,12 +6,16 @@ import { ROUTES } from '../constants/routes';
 
 const ProductList = ({ products }) => {
   return (
-    <div className="grid grid-cols-4 gap-8 min-w-[1024px]"> {/* Đặt min-width */}
+    <div className="grid grid-cols-4 gap-8 min-w-[1024px]"> 
       {products.map((product) => (
-        <div key={product.id} className="relative text-center">
-          <Link to={`${ROUTES.PRODUCTDETAIL}`}>
+        <div key={product._id} className="relative text-center"> 
+          <Link to={`${ROUTES.PRODUCTDETAIL}/${product._id}`}> 
             <div className="relative">
-              <img src={product.image} alt={product.name} className="w-full h-80 object-cover mb-4" />
+              <img 
+                src={Array.isArray(product.imageUrl) ? product.imageUrl[0] : product.imageUrl} 
+                alt={product.name} 
+                className="w-full h-80 object-cover mb-4" 
+              />
               <FontAwesomeIcon 
                 icon={faHeart} 
                 className="absolute top-2 right-2 text-gray-500 hover:text-red-500 cursor-pointer" 
