@@ -5,7 +5,6 @@ import {
   faBox,
   faCog,
   faStar,
-  faSignOutAlt,
   faEdit,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
@@ -24,7 +23,6 @@ const Sidebar = ({ setActiveSection }) => {
     { id: 'orders', label: 'Order history', icon: faBox },
     { id: 'reviews', label: 'Review history', icon: faStar },
     { id: 'changePassword', label: 'Change my password', icon: faEdit },
-    { id: 'logout', label: 'Đăng xuất', icon: faSignOutAlt },
   ];
 
   return (

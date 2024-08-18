@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Orders from './OrderHistory';
 import AccountSettings from './AccountSetting';
-import { getUserById } from '../services/userService'; // Import hàm getUserById
+import { getUserById } from '../services/userService';
+import { dateFormat } from '../utils/dateFormat'; // Import hàm dateFormat từ utils.js
 
 const ProfileContent = ({ activeSection, userId }) => {
   const [user, setUser] = useState(null);
@@ -36,7 +37,7 @@ const ProfileContent = ({ activeSection, userId }) => {
       case 'profile':
         return (
           <div>
-            <h2 className="text-2xl font-bold ">Profile</h2>
+            <h2 className="text-2xl font-bold">Profile</h2>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <h3 className="font-bold">EMAIL ADDRESS</h3>
@@ -60,7 +61,7 @@ const ProfileContent = ({ activeSection, userId }) => {
               </div>
               <div>
                 <h3 className="font-bold">BIRTHDAY</h3>
-                <p>{user.dob}</p>
+                <p>{dateFormat(user.dob)}</p> {/* Sử dụng hàm dateFormat */}
               </div>
               <div>
                 <h3 className="font-bold">GENDER</h3>

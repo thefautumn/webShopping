@@ -11,15 +11,23 @@ export const getProducts = async () => {
   }
 };
 
-// Get product by ID
 export const getProductById = async (id) => {
   try {
     const response = await axiosInstance.get(`/products/${id}`);
     return response.data;
   } catch (error) {
-    throw error.response ? error.response.data : error;
+    // Nếu error có response từ server, trả về error.response.data (chứa thông tin chi tiết lỗi từ server)
+    if (error.response) {
+      console.error('API Error:', error.response.data);
+      throw new Error(error.response.data.message || 'Failed to fetch product');
+    } else {
+      // Nếu không có response (lỗi network hoặc lỗi không xác định), trả về error message.
+      console.error('Error:', error.message || 'An unknown error occurred');
+      throw new Error(error.message || 'An unknown error occurred');
+    }
   }
 };
+
 
 // Create a new product
 export const createProduct = async (productData) => {
@@ -49,4 +57,4 @@ export const deleteProduct = async (id) => {
   } catch (error) {
     throw error.response ? error.response.data : error;
   }
-};
+};  

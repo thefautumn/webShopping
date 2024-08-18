@@ -12,7 +12,7 @@ export const ROUTES = {
     PROFILE: '/profile',
   
     //Content
-    PRODUCTDETAIL: '/products',
+    PRODUCTDETAIL: '/product',
     // Footer
     FAQ: '/faq',
     RETURNS_POLICY: '/returns-policy',
@@ -26,5 +26,13 @@ export const ROUTES = {
     FACEBOOK: 'https://facebook.com',
     INSTAGRAM: 'https://instagram.com',
     YOUTUBE: 'https://youtube.com',
+
+    ADMIN: '/admin',
+    ADMINLOGIN: 'adminLogin',
+    DASHBOARD: 'dashboard',
+    USERMANAGEMENT: 'user_management',
+    CATEGORIES: 'categories',
+    PRODUCTS: 'products',
+    CREATEPRODUCTS: 'create_product'
   };
   

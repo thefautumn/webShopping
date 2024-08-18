@@ -1,51 +1,53 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { getProductById } from '../services/productService'; // Import the service
+import { getProductById } from '../services/productService';
 
 const ProductDetail = () => {
-    const { id } = useParams(); // Get the product ID from the URL
+    const { id } = useParams(); // Lấy productId từ URL
     const [product, setProduct] = useState(null);
     const [selectedSize, setSelectedSize] = useState('');
     const [quantity, setQuantity] = useState(1);
     const [availableSizes, setAvailableSizes] = useState([]);
     const [showMoreReviews, setShowMoreReviews] = useState(false);
     const [selectedImage, setSelectedImage] = useState('');
-    const [errorMessage, setErrorMessage] = useState(''); // To show error messages
+    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const productData = await getProductById(id); // Use the service
-                setProduct(productData);
-                setSelectedImage(productData.imageUrl ? productData.imageUrl[0] : ''); // Set the main image
-                setAvailableSizes(productData.stocks.filter(stock => stock.quantity > 0).map(stock => stock.size));
-                setSelectedSize(productData.stocks.filter(stock => stock.quantity > 0)[0]?.size || '');
+                const productData = await getProductById(id); // Gọi service để lấy sản phẩm và danh mục liên quan
+                setProduct(productData.product);
+                setSelectedImage(productData.product.imageUrl ? productData.product.imageUrl[0] : '');
+                setAvailableSizes(productData.product.stocks.filter(stock => stock.quantity > 0).map(stock => stock.size));
+                setSelectedSize(productData.product.stocks.filter(stock => stock.quantity > 0)[0]?.size || '');
             } catch (error) {
                 console.error('Failed to fetch product details:', error);
+                setErrorMessage('Failed to load product details. Please try again later.');
             }
         };
 
         fetchProduct();
     }, [id]);
 
+    if (errorMessage) return <p>{errorMessage}</p>;
     if (!product) return <p>Loading...</p>;
 
     const handleSizeChange = (size) => {
         setSelectedSize(size);
         const selectedStock = product.stocks.find(stock => stock.size === size);
-        setQuantity(Math.min(quantity, selectedStock.quantity)); // Ensure the quantity doesn't exceed available stock
-        setErrorMessage(''); // Clear any previous error messages
+        setQuantity(Math.min(quantity, selectedStock.quantity));
+        setErrorMessage('');
     };
 
     const handleQuantityChange = (e) => {
         const value = parseInt(e.target.value);
         if (isNaN(value) || value < 1) {
-            setQuantity(1); // Ensure at least 1 is selected
+            setQuantity(1);
         } else {
             const selectedStock = product.stocks.find(stock => stock.size === selectedSize);
             if (value > selectedStock.quantity) {
                 setErrorMessage('Không đủ số lượng trong kho');
-                setQuantity(selectedStock.quantity); // Set quantity to max available stock
+                setQuantity(selectedStock.quantity);
             } else {
                 setErrorMessage('');
                 setQuantity(value);
@@ -59,7 +61,6 @@ const ProductDetail = () => {
             setErrorMessage('Không đủ số lượng trong kho');
         } else {
             setErrorMessage('');
-            // Add the product to the cart
             console.log(`Added ${quantity} of size ${selectedSize} to the cart`);
         }
     };
@@ -106,6 +107,12 @@ const ProductDetail = () => {
                     <p className="text-yellow-500 mb-6">★★★★☆ ({product.reviews.length})</p>
                     <p className="text-gray-500 mb-6">{product.description}</p>
 
+                    {/* Display Current Category */}
+                    <div className="mb-6">
+                        <h3 className="text-lg font-semibold mb-2">Danh Mục: {product.category.name} </h3>
+                    
+                    </div>
+
                     {/* Size Selection */}
                     <div className="mb-6">
                         <h3 className="text-lg font-semibold mb-2">Kích Cỡ</h3>
@@ -135,7 +142,7 @@ const ProductDetail = () => {
                         />
                     </div>
 
-                    {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>} {/* Show error message */}
+                    {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
 
                     {/* Add to Cart Button */}
                     <button 

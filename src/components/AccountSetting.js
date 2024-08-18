@@ -206,7 +206,7 @@ const AccountSetting = ({ userId }) => {
           <DatePicker
             selected={dob}
             onChange={(date) => setDob(date)}
-            dateFormat="yyyy-MM-dd"
+            dateFormat="dd-MM-yyyy"
             showYearDropdown
             maxDate={new Date()}
             className="border border-gray-300 rounded-md p-2 mt-1"
