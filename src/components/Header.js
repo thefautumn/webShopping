@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faShoppingCart, faHeart, faUser } from '@fortawesome/free-solid-svg-icons';
@@ -6,19 +6,22 @@ import { ROUTES } from '../constants/routes';
 import LoginModal from './LoginModal';  
 import RegisterModal from './RegisterModal';
 import { getUserById } from '../services/userService'; 
-import {jwtDecode} from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode'; 
+import { CartContext } from './CartContext'; 
 
 const Header = () => {
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [user, setUser] = useState(null);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [timeoutId, setTimeoutId] = useState(null);
-  
-  const navigate = useNavigate(); // Khởi tạo useHistory
+  const [isLoginOpen, setIsLoginOpen] = React.useState(false);
+  const [isRegisterOpen, setIsRegisterOpen] = React.useState(false);
+  const [isSearchOpen, setIsSearchOpen] = React.useState(false);
+  const [user, setUser] = React.useState(null);
+  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
+  const [timeoutId, setTimeoutId] = React.useState(null);
 
-  useEffect(() => {
+  const { cart } = useContext(CartContext);  
+
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
     const fetchUser = async () => {
       const token = localStorage.getItem('token');
       if (token) {
@@ -74,7 +77,7 @@ const Header = () => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     setUser(null);
-    navigate(ROUTES.HOME); // Chuyển hướng người dùng về trang chủ sau khi logout
+    navigate(ROUTES.HOME);
   };
 
   const handleMouseEnter = () => {
@@ -87,9 +90,10 @@ const Header = () => {
   const handleMouseLeave = () => {
     const id = setTimeout(() => {
       setIsDropdownOpen(false);
-    }, 200); // Trì hoãn 200ms trước khi đóng dropdown
+    }, 200);
     setTimeoutId(id);
   };
+  const totalItemsInCart = cart.items.reduce((total, item) => total + item.quantity, 0);
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-50 overflow-visible" style={{ minWidth: '1024px' }}>
@@ -147,7 +151,11 @@ const Header = () => {
           )}
           <a href={ROUTES.CART} className="text-gray-800 relative">
             <FontAwesomeIcon icon={faShoppingCart} size="lg" />
-            <span className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs rounded-full px-1">2</span>
+            {totalItemsInCart > 0 && (
+              <span className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs rounded-full px-1">
+                {totalItemsInCart}
+              </span>
+            )}
           </a>
           <a href={ROUTES.FAVORITE} className="text-gray-800 relative">
             <FontAwesomeIcon icon={faHeart} size="lg" />
@@ -156,7 +164,6 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Hiển thị thanh tìm kiếm */}
       {isSearchOpen && (
         <div className="container mx-auto px-4 py-2">
           <input

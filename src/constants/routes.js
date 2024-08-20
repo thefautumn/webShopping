@@ -10,7 +10,10 @@ export const ROUTES = {
     CART: '/cart',
     FAVORITE: '/favorite',
     PROFILE: '/profile',
+    BILLING: '/billing',
   
+
+
     //Content
     PRODUCTDETAIL: '/product',
     // Footer
