@@ -30,7 +30,7 @@ const CartPage = () => {
   };
 
   const handleCheckout = () => {
-    navigate(ROUTES.BILLING);
+    navigate(ROUTES.CHECKOUT);
   };
 
   const totalAmount = cart.items.reduce((total, item) => total + item.price * item.quantity, 0);

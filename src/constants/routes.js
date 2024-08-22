@@ -10,8 +10,8 @@ export const ROUTES = {
     CART: '/cart',
     FAVORITE: '/favorite',
     PROFILE: '/profile',
-    BILLING: '/billing',
-  
+    CHECKOUT: '/checkout',
+    SUCCESS:'/success',
 
 
     //Content

@@ -14,7 +14,6 @@ const Profile = () => {
     // Lấy token từ localStorage
     const token = localStorage.getItem('token');
     if (token) {
-      // Giải mã token để lấy userId
       const decodedToken = jwtDecode(token);
       setUserId(decodedToken.id);
     } else {

@@ -7,9 +7,10 @@ import ProductDetail from './pages/ProductDetail';
 import CartPage from './pages/Cart';
 import FavoritePage from './pages/Favorite';
 import Profile from './pages/Profile';
-import BillingInformation from './pages/BillingInformation';
+import CheckoutPage from './pages/Checkout';
 import AdminDashboard from './admin/pages/Dashboard'; // ví dụ admin dashboard
 import AdminLayout from './admin/components/AdminLayout'; // layout cho admin
+import PaymentSuccess from './components/PaymentSuccess';
 
 import { ROUTES } from './constants/routes'; // Make sure the path is correct
 import ProductManagement from './admin/pages/ProductManagement';
@@ -29,7 +30,8 @@ function App() {
             <Route path={ROUTES.CART} element={<CartPage />} />
             <Route path={ROUTES.FAVORITE} element={<FavoritePage />} />
             <Route path={ROUTES.PROFILE} element={<Profile />} />
-            <Route path={ROUTES.BILLING} element={<BillingInformation />} />
+            <Route path={ROUTES.CHECKOUT} element={<CheckoutPage />} />
+            <Route path={ROUTES.SUCCESS} element={<PaymentSuccess />} />
 
           </Route>
 
