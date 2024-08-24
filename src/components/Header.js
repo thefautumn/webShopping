@@ -8,6 +8,7 @@ import RegisterModal from './RegisterModal';
 import { getUserById } from '../services/userService'; 
 import {jwtDecode} from 'jwt-decode'; 
 import { CartContext } from './CartContext'; 
+import { FavoritesContext } from '../context/FavoritesContext';  // Import FavoritesContext
 
 const Header = () => {
   const [isLoginOpen, setIsLoginOpen] = React.useState(false);
@@ -18,6 +19,7 @@ const Header = () => {
   const [timeoutId, setTimeoutId] = React.useState(null);
 
   const { cart } = useContext(CartContext);  
+  const { favoriteIds } = useContext(FavoritesContext);  // Use context to get favorite IDs
 
   const navigate = useNavigate();
 
@@ -93,6 +95,7 @@ const Header = () => {
     }, 200);
     setTimeoutId(id);
   };
+
   const totalItemsInCart = cart.items.reduce((total, item) => total + item.quantity, 0);
 
   return (
@@ -159,7 +162,11 @@ const Header = () => {
           </a>
           <a href={ROUTES.FAVORITE} className="text-gray-800 relative">
             <FontAwesomeIcon icon={faHeart} size="lg" />
-            <span className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs rounded-full px-1">0</span>
+            {favoriteIds.length > 0 && ( // Display the count if there are favorites
+              <span className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs rounded-full px-1">
+                {favoriteIds.length}
+              </span>
+            )}
           </a>
         </div>
       </div>

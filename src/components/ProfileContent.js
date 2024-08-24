@@ -52,12 +52,8 @@ const ProfileContent = ({ activeSection, userId }) => {
                 <p>{user.firstName} {user.lastName}</p>
               </div>
               <div>
-                <h3 className="font-bold">MOBILE PHONE</h3>
-                <p>{user.mobilePhone}</p>
-              </div>
-              <div>
                 <h3 className="font-bold">ADDRESS</h3>
-                <p>{user.address}</p>
+                <p>{user.detailedAddress}</p>
               </div>
               <div>
                 <h3 className="font-bold">BIRTHDAY</h3>
@@ -74,6 +70,8 @@ const ProfileContent = ({ activeSection, userId }) => {
         return <Orders user={user} />;
       case 'accountSettings':
         return <AccountSettings userId={userId} />;
+        case 'orders':
+      return <Orders userId={userId} />; 
       default:
         return <div>Select a section from the sidebar</div>;
     }

@@ -15,8 +15,7 @@ const AccountSetting = ({ userId }) => {
   const [ward, setWard] = useState('');
   const [detailedAddress, setDetailedAddress] = useState('');
   const [phone, setPhone] = useState('');
-  const [mobilePhone, setMobilePhone] = useState('');
-  const [dob, setDob] = useState(null);
+   const [dob, setDob] = useState(null);
   const [gender, setGender] = useState('');
   const [message, setMessage] = useState('');
 
@@ -36,8 +35,7 @@ const AccountSetting = ({ userId }) => {
         setWard(userData.ward);
         setDetailedAddress(userData.detailedAddress);
         setPhone(userData.phone);
-        setMobilePhone(userData.mobilePhone);
-        setDob(userData.dob ? new Date(userData.dob) : null);
+         setDob(userData.dob ? new Date(userData.dob) : null);
         setGender(userData.gender);
       } catch (error) {
         console.error('Failed to load user data:', error);
@@ -81,6 +79,17 @@ const AccountSetting = ({ userId }) => {
     setDetailedAddress(address);
   }, [province, district, ward, provinces, districts, wards]);
 
+  const handlePhoneChange = (e) => {
+    const value = e.target.value;
+    const regex = /^(0[3|5|7|8|9])+([0-9]{8})$/; // Định dạng số điện thoại Việt Nam
+    if (value === '' || regex.test(value)) {
+      setPhone(value);
+      setMessage('');
+    } else {
+      setMessage('Số điện thoại không hợp lệ. Số điện thoại phải có 10 chữ số và bắt đầu bằng 03, 05, 07, 08, hoặc 09.');
+    }
+  };
+
   const handleSaveChanges = async () => {
     const age = new Date().getFullYear() - (dob ? dob.getFullYear() : 0);
     if (age < 13) {
@@ -96,7 +105,6 @@ const AccountSetting = ({ userId }) => {
       ward,
       detailedAddress,
       phone,
-      mobilePhone,
       dob: dob ? dob.toISOString().split('T')[0] : null, // Ensure the date is in correct format
       gender,
     };
@@ -122,6 +130,17 @@ const AccountSetting = ({ userId }) => {
             readOnly
             className="border border-gray-300 rounded-md p-2 mt-1"
           />
+        </div>
+        <div className="flex flex-col">
+          <label className="font-semibold">PHONE*</label>
+          <input
+            type="text" // Sử dụng type="text" để có thể kiểm tra định dạng
+            value={phone}
+            onChange={handlePhoneChange}
+            className="border border-gray-300 rounded-md p-2 mt-1"
+            placeholder="Nhập số điện thoại"
+          />
+          {message && <p className="text-red-500 mt-2">{message}</p>}
         </div>
         <div className="flex flex-col">
           <label className="font-semibold">FIRST NAME*</label>

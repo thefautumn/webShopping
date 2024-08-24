@@ -11,7 +11,7 @@ import CheckoutPage from './pages/Checkout';
 import AdminDashboard from './admin/pages/Dashboard'; // ví dụ admin dashboard
 import AdminLayout from './admin/components/AdminLayout'; // layout cho admin
 import PaymentSuccess from './components/PaymentSuccess';
-
+import { FavoritesProvider } from './context/FavoritesContext';
 import { ROUTES } from './constants/routes'; // Make sure the path is correct
 import ProductManagement from './admin/pages/ProductManagement';
 import CreateProduct from './admin/pages/CreateProduct';
@@ -19,7 +19,8 @@ import { CartProvider } from './components/CartContext'; // Import the CartProvi
  
 function App() {
   return (
-    <CartProvider> {/* Wrap the entire app with CartProvider */}
+    <CartProvider>  
+      <FavoritesProvider>
       <Router>
         <Routes>
           {/* User routes */}
@@ -45,6 +46,7 @@ function App() {
           </Route>
         </Routes>
       </Router>
+      </FavoritesProvider>
     </CartProvider>
   );
 }
