@@ -35,7 +35,7 @@ export const getCart = async () => {
   
   export const removeCartItem = async (productId, size) => {
     try {
-      const response = await axiosInstance.delete(`/cart/delete-item`, { data: { productId, size } });
+      const response = await axiosInstance.delete(`/cart/remove-item`, { data: { productId, size } });
       return response.data;
     } catch (error) {
       throw error.response?.data?.message || 'Failed to remove cart item';

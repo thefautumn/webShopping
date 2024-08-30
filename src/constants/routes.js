@@ -1,7 +1,7 @@
 export const ROUTES = {
     // Header
     HOME: '/',
-    SHOP: '/shop',
+    SHOP: '/all-product',
     MALE: '/male',
     USER: '/user',
     FEMALE: '/female',
@@ -12,10 +12,11 @@ export const ROUTES = {
     PROFILE: '/profile',
     CHECKOUT: '/checkout',
     SUCCESS:'/success',
-
+    CATEGORY:'category',
+    PRODUCT:'/product',
 
     //Content
-    PRODUCTDETAIL: '/product',
+    PRODUCTDETAIL: '/product-detail',
     // Footer
     FAQ: '/faq',
     RETURNS_POLICY: '/returns-policy',

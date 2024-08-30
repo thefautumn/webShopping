@@ -64,4 +64,13 @@ export const getSubCategories = async (parentCategoryId) => {
     throw error;
   }
 };
+export const getSubCategoriesByParent = async (parentCategoryName) => {
+  try {
+    const response = await axiosInstance.get(`/categories/subcategories/${parentCategoryName}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching subcategories:', error);
+    throw error;
+  }
+};
 

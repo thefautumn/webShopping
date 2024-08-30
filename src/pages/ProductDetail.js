@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode';
 import { getProductById } from '../services/productService';
 import { addToCart } from '../services/cartService'; 
-import { CartContext } from '../components/CartContext';
-import LoginModal from '../components/LoginModal';
+import { CartContext } from '../context/CartContext';
 import { ADD_TO_CART } from '../constants/actionTypes';
+import { ToastContainer, toast } from 'react-toastify';  // Import ToastContainer and toast
+import 'react-toastify/dist/ReactToastify.css';  // Import React-Toastify styles
+import {jwtDecode} from 'jwt-decode';  // Import jwtDecode correctly
 
 const ProductDetail = () => {
     const { id } = useParams(); 
@@ -17,7 +18,7 @@ const ProductDetail = () => {
     const [selectedImage, setSelectedImage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
-    const [isLoginOpen, setIsLoginOpen] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);  // State to track login status
 
     const { dispatch } = useContext(CartContext);
 
@@ -36,6 +37,20 @@ const ProductDetail = () => {
         };
 
         fetchProduct();
+
+        // Check if the user is logged in
+        const token = localStorage.getItem('token');
+        if (token) {
+            try {
+                const userId = jwtDecode(token).id;  
+                setIsLoggedIn(!!userId);   
+            } catch (error) {
+                console.error('Invalid token:', error);
+                setIsLoggedIn(false);
+            }
+        } else {
+            setIsLoggedIn(false);
+        }
     }, [id]);
 
     if (errorMessage) return <p>{errorMessage}</p>;
@@ -64,58 +79,65 @@ const ProductDetail = () => {
         }
     };
 
-    const openLoginModal = () => {
-        setIsLoginOpen(true);
-        setSuccessMessage('');
+    const notifyLoginRequired = () => {
+        toast.error('Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.', {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
     };
 
     const handleAddToCart = async () => {
         try {
-          const token = localStorage.getItem('token');
-          if (!token) {
-            setErrorMessage('Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.');
-            openLoginModal();  // Mở modal đăng nhập nếu người dùng chưa đăng nhập
-            return;
-          }
-      
-          const userId = jwtDecode(token).id;
-          if (!userId) {
-            setErrorMessage('Invalid token: User ID not found.');
-            return;
-          }
-      
-          const selectedStock = product.stocks.find(stock => stock.size === selectedSize);
-          if (quantity > selectedStock.quantity) {
-            setErrorMessage('Không đủ số lượng trong kho');
-          } else {
-            await addToCart(userId, product._id, quantity, selectedSize);  // Cập nhật giỏ hàng trên API
-            dispatch({
-              type: ADD_TO_CART,
-              payload: {
-                productId: product._id,
-                name: product.name,
-                price: product.price,
-                size: selectedSize,
-                quantity,  // Make sure quantity is the intended amount
-                imageUrl: product.imageUrl[0],
-              },
-            });
-            setSuccessMessage('Sản phẩm đã được thêm vào giỏ hàng');
-            setErrorMessage('');
-          }
+            if (!isLoggedIn) {
+                notifyLoginRequired();  // Show toast notification for login requirement
+                return;
+            }
+
+            const token = localStorage.getItem('token');
+            const userId = jwtDecode(token).id;  // Decode token to get userId
+
+            if (!userId) {
+                setErrorMessage('Invalid token: User ID not found.');
+                return;
+            }
+
+            const selectedStock = product.stocks.find(stock => stock.size === selectedSize);
+            if (quantity > selectedStock.quantity) {
+                setErrorMessage('Không đủ số lượng trong kho');
+            } else {
+                await addToCart(userId, product._id, quantity, selectedSize);  // Update cart in the API
+                dispatch({
+                    type: ADD_TO_CART,
+                    payload: {
+                        productId: product._id,
+                        name: product.name,
+                        price: product.price,
+                        size: selectedSize,
+                        quantity,  // Ensure quantity is correct
+                        imageUrl: product.imageUrl[0],
+                    },
+                });
+                setSuccessMessage('Sản phẩm đã được thêm vào giỏ hàng');
+                setErrorMessage('');
+            }
         } catch (error) {
-          setErrorMessage('Failed to add product to cart. Please try again later.');
-          setSuccessMessage('');
+            setErrorMessage('Failed to add product to cart. Please try again later.');
+            setSuccessMessage('');
         }
-      };
-      
-    
+    };
+
     const toggleShowMoreReviews = () => {
         setShowMoreReviews(prev => !prev);
     };
 
     return (
         <div className="container mx-auto px-4 py-12" style={{ minWidth: '1024px' }}>
+            <ToastContainer />  {/* Add the ToastContainer component here */}
             <div className="flex">
                 <div className="w-1/6 flex flex-col space-y-2 items-start">
                     <div className="grid grid-cols-2 gap-1 ">
@@ -177,9 +199,9 @@ const ProductDetail = () => {
                     {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
                     {successMessage && <p className="text-green-500 mb-4">{successMessage}</p>}
                     <button 
-                        className="bg-red-600 text-white px-6 py-3 rounded-full" 
+                        className={`bg-red-600 text-white px-6 py-3 rounded-full `} 
                         onClick={handleAddToCart}
-                    >
+                     >
                         Thêm Vào Giỏ Hàng
                     </button>
                 </div>
@@ -202,7 +224,6 @@ const ProductDetail = () => {
                     {showMoreReviews ? 'Ẩn Bớt' : 'Xem Thêm'}
                 </button>
             </div>
-            {isLoginOpen && <LoginModal onClose={() => setIsLoginOpen(false)} />}
         </div>
     );
 };

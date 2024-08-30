@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { CartContext } from '../components/CartContext';
+import { CartContext } from '../context/CartContext';
 import { updateCartItemQuantity, removeCartItem } from '../services/cartService'; // Import API services
 import { ROUTES } from '../constants/routes';
 import { useNavigate } from 'react-router-dom';
@@ -28,8 +28,9 @@ const CartPage = () => {
       console.error('Failed to update cart item:', error.message);
     }
   };
-
+ 
   const handleCheckout = () => {
+ 
     navigate(ROUTES.CHECKOUT);
   };
 

@@ -4,12 +4,13 @@ import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../constants/routes';
 import { getFavorites } from '../services/favoriteService';
+import { getProductById } from '../services/productService';  // Ensure you import the function to fetch product details
 import { addToCart } from '../services/cartService';
 import { FavoritesContext } from '../context/FavoritesContext';
-import { CartContext } from '../components/CartContext';
+import { CartContext } from '../context/CartContext';
 import { ADD_TO_CART } from '../constants/actionTypes';
 import LoginModal from '../components/LoginModal';
-import {jwtDecode} from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';  // Correct the import
 
 const FavoritePage = () => {
   const { favoriteIds, toggleFavorite } = useContext(FavoritesContext);
@@ -25,21 +26,36 @@ const FavoritePage = () => {
   useEffect(() => {
     const fetchFavoriteProducts = async () => {
       try {
-        const favorites = await getFavorites(); // Fetch favorite products using API
-        const products = favorites.map(favorite => favorite.productId); // Extract product data
-        setFavoriteProducts(products);
+        const favorites = await getFavorites();
+        const productIds = favorites.map((favorite) => {
+          if (typeof favorite.productId === 'object' && favorite.productId._id) {
+            return favorite.productId._id.toString(); // Extract and ensure it's a string
+          }
+          return favorite.productId; // If already a string
+        });
+
+        // Fetch full product details
+        const productsPromises = productIds.map((id) => getProductById(id).catch((error) => null)); // Handle individual fetch errors
+        const products = await Promise.all(productsPromises);
+
+        // Filter out any null responses due to errors in fetching
+        const validProducts = products.filter(product => product !== null && product.product !== undefined);
+        setFavoriteProducts(validProducts.map(product => product.product)); // Adjust based on your productService response structure
+
         // Initialize sizes and quantities
         const initialSizes = {};
         const initialQuantities = {};
-        products.forEach(product => {
-          const availableSizes = product.stocks.filter(stock => stock.quantity > 0).map(stock => stock.size);
-          initialSizes[product._id] = availableSizes[0] || '';
-          initialQuantities[product._id] = 1;
+        validProducts.forEach(product => {
+          const availableSizes = product.product.stocks.filter(stock => stock.quantity > 0).map(stock => stock.size);
+          initialSizes[product.product._id] = availableSizes[0] || '';
+          initialQuantities[product.product._id] = 1;
         });
         setSelectedSize(initialSizes);
         setQuantity(initialQuantities);
+
       } catch (error) {
         console.error('Failed to fetch favorite products:', error);
+        setErrorMessage('Failed to fetch favorite products.');
       }
     };
 

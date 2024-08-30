@@ -7,7 +7,7 @@ import LoginModal from './LoginModal';
 import RegisterModal from './RegisterModal';
 import { getUserById } from '../services/userService'; 
 import {jwtDecode} from 'jwt-decode'; 
-import { CartContext } from './CartContext'; 
+import { CartContext } from '../context/CartContext'; 
 import { FavoritesContext } from '../context/FavoritesContext';  // Import FavoritesContext
 
 const Header = () => {
@@ -107,8 +107,10 @@ const Header = () => {
           </div>
           <nav className="flex space-x-6">
             <a href={ROUTES.SHOP} className="text-x text-gray-800 font-sans font-medium hover:text-gray-600">SHOP</a>
-            <a href={ROUTES.MALE} className="text-x text-gray-800 font-sans font-medium hover:text-gray-600">MEN</a>
-            <a href={ROUTES.FEMALE} className="text-x text-gray-800 font-sans font-medium hover:text-gray-600">WOMEN</a>
+            <a href={`${ROUTES.PRODUCT}/${ROUTES.CATEGORY}/Men`} className="text-x text-gray-800 font-sans font-medium hover:text-gray-600">MEN</a>
+            <a href={`${ROUTES.PRODUCT}/${ROUTES.CATEGORY}/Women`} className="text-x text-gray-800 font-sans font-medium hover:text-gray-600">WOMEN</a>
+            <a href={`${ROUTES.PRODUCT}/${ROUTES.CATEGORY}/Accessories`} className="text-x text-gray-800 font-sans font-medium hover:text-gray-600">ACCESSORIES</a>
+
           </nav>
         </div>
         <div className="flex items-center space-x-10">
