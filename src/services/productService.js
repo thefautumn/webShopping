@@ -29,6 +29,17 @@ export const getProductById = async (id) => {
 };
 
 
+
+export const getProductsByCategory = async (categoryName) => {
+  try {
+    const response = await axiosInstance.get(`/products/category/${categoryName}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching products for category ${categoryName}:`, error);
+    throw error;
+  }
+};
+
 // Create a new product
 export const createProduct = async (productData) => {
   try {

@@ -1,42 +1,46 @@
-// src/services/axiosConfig.js
 import axios from 'axios';
+import { isTokenExpired,removeToken} from './utils/auth';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:5000/api', // URL cơ sở cho tất cả các yêu cầu API
+  baseURL: 'http://localhost:5000/api',
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Request Interceptor để thêm token vào header
- axiosInstance.interceptors.request.use(
-    config => {
-      // Lấy token từ localStorage (nếu tồn tại)
-      const token = localStorage.getItem('token');
-  
-      // Nếu token tồn tại, thêm nó vào header Authorization
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-  
+axiosInstance.interceptors.request.use(
+  (config) => {
+     const skipAuthRoutes = ['/login', '/products'];  
+    if (skipAuthRoutes.some((route) => config.url.includes(route))) {
       return config;
-    },
-    error => {
-      // Xử lý lỗi trước khi request được gửi đi
-      return Promise.reject(error);
     }
-  );
-  
 
-// Response Interceptor để xử lý phản hồi từ server
-axiosInstance.interceptors.response.use(
-  response => {
-    // Xử lý phản hồi thành công
-    return response;
+    // Kiểm tra token đã hết hạn chưa
+    if (isTokenExpired()) {
+      console.warn('Token expired. Redirecting to login.');
+      removeToken();
+     }
+
+    // Thêm token vào headers nếu tồn tại
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
   },
-  error => {
-    // Xử lý lỗi toàn cục (ví dụ: thông báo lỗi cho người dùng)
-    console.error('API Error:', error.response || error.message);
+  (error) => Promise.reject(error)
+);
+
+// Interceptor phản hồi để xử lý lỗi token toàn cục
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.message === 'Token expired') {
+      console.error('Token has expired');
+      // Xử lý khi token hết hạn, ví dụ như chuyển hướng đến trang đăng nhập
+    }
+
     return Promise.reject(error);
   }
 );

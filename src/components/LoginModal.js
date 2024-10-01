@@ -1,11 +1,12 @@
+// src/components/LoginModal.js
 import React, { useEffect, useRef, useState } from 'react';
 import { loginUser } from '../services/authService'; 
 import { ToastContainer, toast } from 'react-toastify'; 
 import 'react-toastify/dist/ReactToastify.css';  
+import { setToken } from '../utils/auth'; // Import the setToken function
 
 const LoginModal = ({ onClose, onRegister, onLoginSuccess }) => {
   const modalRef = useRef();
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
  
@@ -26,7 +27,7 @@ const LoginModal = ({ onClose, onRegister, onLoginSuccess }) => {
     e.preventDefault();
     try {
       const response = await loginUser({ email, password });
-      localStorage.setItem('token', response.token); // Lưu token vào localStorage
+      setToken(response.token); // Use setToken to store token and timestamp
       onLoginSuccess(); // Gọi hàm onLoginSuccess để cập nhật giao diện người dùng
       toast.success('Login successful!'); // Thông báo đăng nhập thành công
       onClose(); // Đóng modal sau khi đăng nhập thành công

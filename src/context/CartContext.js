@@ -67,6 +67,10 @@ const CartProvider = ({ children }) => {
     const fetchCart = async () => {
       try {
         const cartData = await getCart();
+        if (cartData.items.length === 0) {
+ 
+          return;
+        }
         dispatch({ type: SET_CART, payload: cartData.items });
       } catch (error) {
         console.error('Failed to fetch cart:', error.message);

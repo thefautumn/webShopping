@@ -64,12 +64,12 @@ export const getSubCategories = async (parentCategoryId) => {
     throw error;
   }
 };
-export const getSubCategoriesByParent = async (parentCategoryName) => {
+export const getCategoryByName = async (categoryName) => {
   try {
-    const response = await axiosInstance.get(`/categories/subcategories/${parentCategoryName}`);
+    const response = await axiosInstance.get(`/categories/name/${categoryName}`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching subcategories:', error);
+    console.error('Error fetching category by name:', error);
     throw error;
   }
 };

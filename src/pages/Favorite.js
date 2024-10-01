@@ -2,15 +2,16 @@ import React, { useEffect, useState, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '../constants/routes';
-import { getFavorites } from '../services/favoriteService';
+ import { getFavorites, removeFavorite } from '../services/favoriteService';
 import { getProductById } from '../services/productService';  // Ensure you import the function to fetch product details
 import { addToCart } from '../services/cartService';
 import { FavoritesContext } from '../context/FavoritesContext';
 import { CartContext } from '../context/CartContext';
-import { ADD_TO_CART } from '../constants/actionTypes';
+import { ADD_TO_CART,REMOVE_FAVORITE } from '../constants/actionTypes';
 import LoginModal from '../components/LoginModal';
 import {jwtDecode} from 'jwt-decode';  // Correct the import
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const FavoritePage = () => {
   const { favoriteIds, toggleFavorite } = useContext(FavoritesContext);
@@ -74,29 +75,6 @@ const FavoritePage = () => {
     setErrorMessage('');
   };
 
-  const handleQuantityChange = (productId, value) => {
-    if (isNaN(value) || value < 1) {
-      setQuantity(prevState => ({
-        ...prevState,
-        [productId]: 1
-      }));
-    } else {
-      const selectedStock = favoriteProducts.find(p => p._id === productId).stocks.find(stock => stock.size === selectedSize[productId]);
-      if (value > selectedStock.quantity) {
-        setErrorMessage('Không đủ số lượng trong kho');
-        setQuantity(prevState => ({
-          ...prevState,
-          [productId]: selectedStock.quantity
-        }));
-      } else {
-        setErrorMessage('');
-        setQuantity(prevState => ({
-          ...prevState,
-          [productId]: value
-        }));
-      }
-    }
-  };
 
   const handleAddToCart = async (product) => {
     try {
@@ -138,8 +116,21 @@ const FavoritePage = () => {
     }
   };
 
+  const handleRemoveItem = async (productId) => {
+    try {
+      await removeFavorite(productId);
+      dispatch({ type: REMOVE_FAVORITE, payload: { productId } });
+      setFavoriteProducts(prevFavorites => prevFavorites.filter(product => product._id !== productId));
+      toast.success('Item removed from favorite.');
+    } catch (error) {
+      console.error('Failed to remove item from favorite:', error.message);
+      toast.error('Failed to remove item from favorite.');
+    }
+  };
+
   return (
     <div className="container mx-auto py-12 px-4">
+        <ToastContainer />
       <h1 className="text-3xl font-bold mb-8 text-center">Favorites</h1>
       <p className="text-right text-sm mb-4">{favoriteProducts.length} products</p>
 
@@ -160,7 +151,7 @@ const FavoritePage = () => {
                </div>
               <button 
                 className="text-gray-400 hover:text-gray-600"
-                onClick={() => toggleFavorite(product._id)} // Remove from favorites
+                onClick={() => handleRemoveItem(product._id)} 
               >
                 <FontAwesomeIcon icon={faTrashAlt} />
               </button>

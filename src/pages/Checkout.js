@@ -5,18 +5,31 @@ import { useNavigate } from 'react-router-dom'; // Để điều hướng sau kh
 import provincesData from '../dist/tinh_tp.json'; // Import data for provinces
 import districtsData from '../dist/quan_huyen.json'; // Import data for districts
 import wardsData from '../dist/xa_phuong.json'; // Import data for wards
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const CheckoutPage = () => {
   const [billingData, setBillingData] = useState(null);
   const [error, setError] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('PayPal'); // Default payment method
-  const navigate = useNavigate(); // Sử dụng để điều hướng sau khi thanh toán thành công
+  const [isAddressEditable, setIsAddressEditable] = useState(false); // Trạng thái để kiểm tra xem có cho phép nhập địa chỉ hay không
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchBillingData = async () => {
       try {
         const data = await getBillingInformation();
         const cartId = data._id;
+
+        // Kiểm tra xem địa chỉ có sẵn hay không
+        const hasAddress = data.userId.province && data.userId.district && data.userId.ward && data.userId.detailedAddress;
+
+        // Nếu không có địa chỉ, cho phép nhập
+        if (!hasAddress) {
+          setIsAddressEditable(true);
+        }
+
         // Convert province, district, ward codes to names
         const provinceName = provincesData[data.userId.province]?.name_with_type || data.userId.province;
         const districtName = districtsData[data.userId.district]?.name_with_type || data.userId.district;
@@ -31,7 +44,7 @@ const CheckoutPage = () => {
             district: districtName,
             ward: wardName,
           },
-          cartId: cartId 
+          cartId: cartId,
         });
       } catch (err) {
         setError(err.message);
@@ -42,7 +55,13 @@ const CheckoutPage = () => {
   }, []);
 
   const handleCheckout = async () => {
-
+    if (!billingData.userId.province || !billingData.userId.district || !billingData.userId.ward || !billingData.userId.detailedAddress) {
+      toast.error('Please fill in all the required address fields', {
+        position: 'top-right',
+        autoClose: 5000,
+      });
+      return;
+    }
     try {
       const orderData = {
         userId: billingData.userId._id,
@@ -70,14 +89,19 @@ const CheckoutPage = () => {
         const paymentData = await initiatePaypalPayment(order._id, order.totalPrice);
         window.location.href = paymentData.url; // Chuyển hướng người dùng tới PayPal
       } else {
-        alert('Order created successfully with COD method!');
+        toast.success('Order created successfully with COD method!', {
+          position: 'top-right',
+          autoClose: 5000,
+        });
         navigate('/order-confirmation');
       }
     } catch (err) {
-      console.error('Checkout failed:', err.message);
-      setError('Checkout failed. Please try again.');
-    }
+      toast.error('Checkout failed. Please try again.', {
+        position: 'top-right',
+        autoClose: 5000,
+      });
   };
+}
   
   
   if (error) {
@@ -90,56 +114,92 @@ const CheckoutPage = () => {
 
   return (
     <div className="container mx-auto py-8 px-4">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Left Column: Contact, Payment, and Shipping Information */}
-        <div>
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold mb-4">Contact information</h2>
-            <input
-              type="email"
-              value={billingData.userId.email}
-              className="w-full border p-2 rounded mb-4"
-              readOnly
-            />
-              <input
-              type="email"
-              value={billingData.userId.phone}
-              className="w-full border p-2 rounded mb-4"
-              readOnly
-            />
-          </div>
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold mb-4">Shipping address</h2>
-            <input
-              type="text"
-              value={billingData.userId.province}
-              placeholder="Province"
-              className="w-full border p-2 rounded mb-4"
-              readOnly
-            />
-            <input
-              type="text"
-              value={billingData.userId.district}
-              placeholder="District"
-              className="w-full border p-2 rounded mb-4"
-              readOnly
-            />
-            <input
-              type="text"
-              value={billingData.userId.ward}
-              placeholder="Ward"
-              className="w-full border p-2 rounded mb-4"
-              readOnly
-            />
-            <input
-              type="text"
-              value={billingData.userId.detailedAddress}
-              placeholder="Detailed Address"
-              className="w-full border p-2 rounded mb-4"
-              readOnly
-            />
-          </div>
+         <ToastContainer />
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      {/* Left Column: Contact, Payment, and Shipping Information */}
+      <div>
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold mb-4">Contact information</h2>
+          <input
+            type="email"
+            value={billingData.userId.email}
+            className="w-full border p-2 rounded mb-4"
+            readOnly
+          />
+          <input
+            type="text"
+            value={billingData.userId.phone}
+            className="w-full border p-2 rounded mb-4"
+ 
+          />
         </div>
+
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold mb-4">Shipping address</h2>
+
+          {/* Nếu địa chỉ đã tồn tại, chỉ hiển thị thông tin, nếu chưa có, cho phép người dùng nhập */}
+          <input
+            type="text"
+            value={billingData.userId.province || ''}
+            placeholder="Province/City"
+            className="w-full border p-2 rounded mb-4"
+            readOnly={!isAddressEditable}
+            onChange={(e) => {
+              if (isAddressEditable) {
+                setBillingData({
+                  ...billingData,
+                  userId: { ...billingData.userId, province: e.target.value },
+                });
+              }
+            }}
+          />
+          <input
+            type="text"
+            value={billingData.userId.district || ''}
+            placeholder="District"
+            className="w-full border p-2 rounded mb-4"
+            readOnly={!isAddressEditable}
+            onChange={(e) => {
+              if (isAddressEditable) {
+                setBillingData({
+                  ...billingData,
+                  userId: { ...billingData.userId, district: e.target.value },
+                });
+              }
+            }}
+          />
+          <input
+            type="text"
+            value={billingData.userId.ward || ''}
+            placeholder="Ward"
+            className="w-full border p-2 rounded mb-4"
+            readOnly={!isAddressEditable}
+            onChange={(e) => {
+              if (isAddressEditable) {
+                setBillingData({
+                  ...billingData,
+                  userId: { ...billingData.userId, ward: e.target.value },
+                });
+              }
+            }}
+          />
+          <input
+            type="text"
+            value={billingData.userId.detailedAddress || ''}
+            placeholder="Detailed Address"
+            className="w-full border p-2 rounded mb-4"
+            readOnly={!isAddressEditable}
+            onChange={(e) => {
+              if (isAddressEditable) {
+                setBillingData({
+                  ...billingData,
+                  userId: { ...billingData.userId, detailedAddress: e.target.value },
+                });
+              }
+            }}
+          />
+        </div>
+      </div>
 
         {/* Right Column: Order Summary */}
         <div className="bg-gray-50 p-6 rounded-lg shadow-md">

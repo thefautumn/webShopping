@@ -1,12 +1,12 @@
-// src/context/FavoritesContext.js
 import React, { createContext, useReducer, useEffect } from 'react';
-import { addFavorite, removeFavorite, getFavorites } from '../services/favoriteService';
 import { ADD_FAVORITE, REMOVE_FAVORITE, SET_FAVORITES } from '../constants/actionTypes';
+import { getFavorites, addFavorite, removeFavorite } from '../services/favoriteService';
+import { toast } from 'react-toastify';
 
-// Create the FavoritesContext
+// Tạo context
 export const FavoritesContext = createContext();
 
-// Define the reducer function
+// Định nghĩa reducer cho Favorites
 const favoritesReducer = (state, action) => {
   switch (action.type) {
     case SET_FAVORITES:
@@ -29,35 +29,40 @@ const favoritesReducer = (state, action) => {
   }
 };
 
-// Define the provider component
+// Định nghĩa Provider cho FavoritesContext
 export const FavoritesProvider = ({ children }) => {
   const [state, dispatch] = useReducer(favoritesReducer, { favoriteIds: [] });
 
+  // Lấy danh sách yêu thích từ backend khi component mount
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
-        const favorites = await getFavorites(); // Fetch the list of favorite products from the backend
+        const favorites = await getFavorites();
         dispatch({ type: SET_FAVORITES, payload: favorites.map((fav) => fav.productId) });
       } catch (error) {
         console.error('Failed to fetch favorites:', error);
+        toast.error('Failed to load favorites.');
       }
     };
 
     fetchFavorites();
   }, []);
 
+  // Thêm hoặc xóa sản phẩm vào/ra khỏi danh sách yêu thích
   const toggleFavorite = async (productId) => {
     try {
       if (state.favoriteIds.includes(productId)) {
-        await removeFavorite(productId); // Call the removeFavorite function
+        await removeFavorite(productId);
         dispatch({ type: REMOVE_FAVORITE, payload: productId });
+        toast.success('Removed from favorites.');
       } else {
-        await addFavorite(productId); // Call the addFavorite function
+        await addFavorite(productId);
         dispatch({ type: ADD_FAVORITE, payload: productId });
+        toast.success('Added to favorites.');
       }
     } catch (error) {
       console.error('Failed to toggle favorite:', error);
-      alert('Failed to update favorites.');
+      toast.error('Error occurred while updating favorites.');
     }
   };
 

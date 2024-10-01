@@ -33,6 +33,10 @@ const ProfileContent = ({ activeSection, userId }) => {
       return <p className="text-red-500">{error}</p>;
     }
 
+    if (!user) {
+      return <p>No user data available.</p>;
+    }
+    const formattedDob = user.dob ? dateFormat(user.dob) : 'Date';
     switch (activeSection) {
       case 'profile':
         return (
@@ -53,15 +57,15 @@ const ProfileContent = ({ activeSection, userId }) => {
               </div>
               <div>
                 <h3 className="font-bold">ADDRESS</h3>
-                <p>{user.detailedAddress}</p>
+                <p>{user.detailedAddress || 'No address provided'}</p>
               </div>
               <div>
                 <h3 className="font-bold">BIRTHDAY</h3>
-                <p>{dateFormat(user.dob)}</p> {/* Sử dụng hàm dateFormat */}
+                <p>{formattedDob}</p> {/* Sử dụng hàm dateFormat */}
               </div>
               <div>
                 <h3 className="font-bold">GENDER</h3>
-                <p>{user.gender}</p>
+                <p>{user.gender || 'Not specified'}</p>
               </div>
             </div>
           </div>
@@ -70,8 +74,6 @@ const ProfileContent = ({ activeSection, userId }) => {
         return <Orders user={user} />;
       case 'accountSettings':
         return <AccountSettings userId={userId} />;
-        case 'orders':
-      return <Orders userId={userId} />; 
       default:
         return <div>Select a section from the sidebar</div>;
     }

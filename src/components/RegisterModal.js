@@ -35,14 +35,17 @@ const RegisterModal = ({ onClose, onLogin }) => {
 
   // Xử lý submit form
   const handleSubmit = async (e) => {
+    console.log('User data to be sent:', userData);
     e.preventDefault();
     try {
       const response = await registerUser(userData);
+ 
       toast.success('User registered successfully!', {
         position: "top-right",
       });
-    } catch (error) {
-      // Kiểm tra nếu lỗi là mảng validation từ server
+    }catch (error) {
+      console.log('Registration error:', error);
+    
       if (error.response?.data?.errors) {
         error.response.data.errors.forEach(err => {
           toast.error(`Error: ${err.msg}`, {
@@ -50,8 +53,7 @@ const RegisterModal = ({ onClose, onLogin }) => {
           });
         });
       } else {
-        // Nếu không phải lỗi validation, hiển thị thông báo lỗi chung
-        const errorMessage = error.response?.data?.message || error.message || 'Registration failed';
+        const errorMessage = error.response?.data?.error || error.message || 'Registration failed';
         toast.error(`Error: ${errorMessage}`, {
           position: "top-right",
         });

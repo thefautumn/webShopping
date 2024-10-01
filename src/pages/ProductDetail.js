@@ -4,9 +4,9 @@ import { getProductById } from '../services/productService';
 import { addToCart } from '../services/cartService'; 
 import { CartContext } from '../context/CartContext';
 import { ADD_TO_CART } from '../constants/actionTypes';
-import { ToastContainer, toast } from 'react-toastify';  // Import ToastContainer and toast
-import 'react-toastify/dist/ReactToastify.css';  // Import React-Toastify styles
-import {jwtDecode} from 'jwt-decode';  // Import jwtDecode correctly
+import { ToastContainer, toast } from 'react-toastify';  
+import 'react-toastify/dist/ReactToastify.css';   
+import {jwtDecode} from 'jwt-decode';  
 
 const ProductDetail = () => {
     const { id } = useParams(); 
@@ -18,7 +18,7 @@ const ProductDetail = () => {
     const [selectedImage, setSelectedImage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
-    const [isLoggedIn, setIsLoggedIn] = useState(false);  // State to track login status
+    const [isLoggedIn, setIsLoggedIn] = useState(false); 
 
     const { dispatch } = useContext(CartContext);
 

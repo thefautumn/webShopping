@@ -5,32 +5,41 @@ import { CartContext } from '../context/CartContext';
 import { updateCartItemQuantity, removeCartItem } from '../services/cartService'; // Import API services
 import { ROUTES } from '../constants/routes';
 import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify'; // Import Toastify for notifications
+import 'react-toastify/dist/ReactToastify.css'; // Import Toastify CSS
 
 const CartPage = () => {
   const { cart, dispatch } = useContext(CartContext);
   const navigate = useNavigate();
 
-
   const handleRemoveItem = async (productId, size) => {
     try {
       await removeCartItem(productId, size);
       dispatch({ type: 'REMOVE_FROM_CART', payload: { productId, size } });
+      toast.success('Item removed from cart.');
     } catch (error) {
       console.error('Failed to remove item from cart:', error.message);
+      toast.error('Failed to remove item from cart.');
     }
   };
 
   const handleUpdateQuantity = async (productId, size, quantity) => {
     try {
-      await updateCartItemQuantity(productId, size, quantity); 
-      dispatch({ type: 'UPDATE_QUANTITY', payload: { productId, size, quantity } });  
+      await updateCartItemQuantity(productId, size, quantity);
+      dispatch({ type: 'UPDATE_QUANTITY', payload: { productId, size, quantity } });
+      toast.success('Cart updated.');
     } catch (error) {
       console.error('Failed to update cart item:', error.message);
+      toast.error('Failed to update cart item.');
     }
   };
- 
+
   const handleCheckout = () => {
- 
+    if (cart.items.length === 0) {
+      toast.error('Please add items to your cart before proceeding to checkout.');
+      return;
+    }
+
     navigate(ROUTES.CHECKOUT);
   };
 
@@ -39,14 +48,14 @@ const CartPage = () => {
   return (
     <div className="container mx-auto py-12 px-4">
       <h1 className="text-3xl font-bold mb-8">Shopping Cart</h1>
-      
+
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="flex-1">
           {cart.items.length > 0 ? (
             cart.items.map((item, index) => (
               <div key={index} className="flex items-center justify-between border-b pb-4 mb-4">
                 <div className="flex items-center">
-                  <img src={item.imageUrl} alt={item.name} className="w-24 h-24 object-cover mr-4"/>
+                  <img src={item.imageUrl} alt={item.name} className="w-24 h-24 object-cover mr-4" />
                   <div>
                     <h2 className="text-xl font-semibold">{item.name}</h2>
                     <p className="text-gray-600">Size: {item.size}</p>
@@ -54,7 +63,7 @@ const CartPage = () => {
                   </div>
                 </div>
                 <div className="flex items-center">
-                   <select
+                  <select
                     className="border border-gray-300 rounded p-2 text-gray-600"
                     value={item.quantity}
                     onChange={(e) => handleUpdateQuantity(item.productId, item.size, parseInt(e.target.value, 10))}
@@ -89,15 +98,16 @@ const CartPage = () => {
           </div>
           <div className="flex justify-between mb-2">
             <p>Shipping</p>
-           </div>
-          <hr className="my-4"/>
+          </div>
+          <hr className="my-4" />
           <div className="flex justify-between text-xl font-bold">
             <p>Total</p>
-            <p>{(totalAmount ).toLocaleString()} VND</p>
+            <p>{totalAmount.toLocaleString()} VND</p>
           </div>
           <button onClick={handleCheckout} className="w-full bg-black text-white py-3 rounded-md mt-6">Proceed to Checkout</button>
         </div>
       </div>
+      <ToastContainer /> {/* Add ToastContainer to display toast messages */}
     </div>
   );
 };
