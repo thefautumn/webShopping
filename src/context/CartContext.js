@@ -49,7 +49,7 @@ const cartReducer = (state, action) => {
       return {
         ...state,
         items: state.items.map((item) =>
-          item.productId === action.payload.productId && item.size === action.payload.size
+          item.productId.toString() === action.payload.productId.toString() && item.size === action.payload.size
             ? { ...item, quantity: action.payload.quantity }
             : item
         ),
@@ -81,6 +81,7 @@ const CartProvider = ({ children }) => {
   }, []);
 
   const handleUpdateQuantity = async (productId, size, quantity) => {
+ 
     try {
       await updateCartItemQuantity(productId, size, quantity);
       dispatch({ type: UPDATE_QUANTITY, payload: { productId, size, quantity } });

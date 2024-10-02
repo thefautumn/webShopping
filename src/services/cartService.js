@@ -50,3 +50,13 @@ export const getBillingInformation = async () => {
     throw error.response?.data?.message || 'Failed to fetch billing information';
   }
 };
+
+
+export const clearCart = async (userId) => {
+  try {
+    const response = await axiosInstance.delete('/cart/clear-cart');
+    return response.data;
+  } catch (error) {
+    throw error.response?.data?.message || 'Failed to delete cart';
+  }
+};

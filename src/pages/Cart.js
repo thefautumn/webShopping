@@ -24,9 +24,11 @@ const CartPage = () => {
   };
 
   const handleUpdateQuantity = async (productId, size, quantity) => {
+    
     try {
       await updateCartItemQuantity(productId, size, quantity);
       dispatch({ type: 'UPDATE_QUANTITY', payload: { productId, size, quantity } });
+
       toast.success('Cart updated.');
     } catch (error) {
       console.error('Failed to update cart item:', error.message);
