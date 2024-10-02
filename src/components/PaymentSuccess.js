@@ -27,7 +27,7 @@ const PaymentSuccess = () => {
         await completePayment(orderId, token, PayerID);
 
         alert('Payment successful!');
-        navigate('/order-confirmation'); // Redirect to order confirmation page
+        navigate('/profile'); // Redirect to order confirmation page
       } catch (err) {
         console.error('Payment failed:', err.message);
         alert('Payment failed. Please try again.');

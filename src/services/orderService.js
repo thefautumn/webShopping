@@ -40,3 +40,37 @@ export const getUserOrders = async (userId) => {
     }
   };
   
+  export const deleteOrder = async (orderId) => {
+    try {
+      const response = await axiosInstance.delete(`/orders/${orderId}`);
+      return response.data;
+    } catch (error) {
+        console.error('Failed to delete order:', error);
+      throw error.response?.data?.message || 'Failed to delete order';
+    }
+  };
+
+  export const updateOrderStatus = async (orderId, newStatus) => {
+    try {
+      const response = await axiosInstance.put(`/orders/${orderId}/status`,{
+        orderStatus:newStatus
+      });
+      return response.data;
+    } catch (error) {
+        console.error('Failed to update status:', error);
+      throw error.response?.data?.message || 'Failed to update status';
+    }
+  };
+
+  //ADMINNNNNNNNNNN
+
+export const getAllOrders = async () => {
+    try {
+      const response = await axiosInstance.get(`/orders/admin/orders`);
+      return response.data;
+    } catch (error) {
+        console.error('Failed to get all orders:', error);
+      throw error.response ? error.response.data : error;
+    }
+  };  
+  

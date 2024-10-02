@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { getAllCategories, getSubCategories } from '../../services/categoryService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { ROUTES } from '../../constants/routes';
 
 const CreateProduct = () => {
   const [product, setProduct] = useState({
@@ -125,7 +124,7 @@ const CreateProduct = () => {
       toast.success('Product created successfully!');
 
       // Delay navigation to allow toast to be visible
-      setTimeout(() => navigate(ROUTES.PRODUCTS), 2000);
+      setTimeout(() => navigate('/admin/products'), 2000);
     } catch (err) {
       setError(err.message || 'Failed to create product');
       toast.error('Failed to create product!');

@@ -37,6 +37,7 @@ export const ROUTES = {
     USERMANAGEMENT: 'user_management',
     CATEGORIES: 'categories',
     PRODUCTS: 'products',
-    CREATEPRODUCTS: 'create_product'
+    CREATEPRODUCTS: 'create_product',
+    ORDERS: 'orders',
   };
   

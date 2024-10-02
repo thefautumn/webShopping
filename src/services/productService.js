@@ -69,3 +69,4 @@ export const deleteProduct = async (id) => {
     throw error.response ? error.response.data : error;
   }
 };  
+

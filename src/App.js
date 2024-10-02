@@ -19,6 +19,7 @@ import CreateProduct from './admin/pages/CreateProduct';
 import { CartProvider } from './context/CartContext';
 import ProductListByCategory from './components/ProductListByCategory';
 import { isTokenExpired, removeToken } from './utils/auth'; // Import the utility functions
+import OrderManagement from './admin/pages/OrderManagement';
 import ErrorBoundary from './components/ErrorBoundary';
 
 function App() {
@@ -57,6 +58,7 @@ function App() {
               <Route path={ROUTES.USERMANAGEMENT} element={<AdminDashboard />} />
               <Route path={ROUTES.CATEGORIES} element={<AdminDashboard />} />
               <Route path={ROUTES.PRODUCTS} element={<ProductManagement />} />
+              <Route path={ROUTES.ORDERS} element={<OrderManagement />} />
               <Route path={`${ROUTES.PRODUCTS}/${ROUTES.CREATEPRODUCTS}`} element={<CreateProduct />} />
             </Route>
           </Routes>

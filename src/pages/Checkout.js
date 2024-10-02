@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getBillingInformation } from '../services/cartService';
+import { clearCart, getBillingInformation } from '../services/cartService';
 import { createOrder, initiatePaypalPayment } from '../services/orderService'; // Import các service cần thiết
 import { useNavigate } from 'react-router-dom'; // Để điều hướng sau khi thanh toán thành công hoặc thất bại
 import provincesData from '../dist/tinh_tp.json'; // Import data for provinces
@@ -13,7 +13,8 @@ const CheckoutPage = () => {
   const [billingData, setBillingData] = useState(null);
   const [error, setError] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('PayPal'); // Default payment method
-  const [isAddressEditable, setIsAddressEditable] = useState(false); // Trạng thái để kiểm tra xem có cho phép nhập địa chỉ hay không
+  const [isAddressEditable, setIsAddressEditable] = useState(false); 
+  const [isPhoneEditable, setIsPhoneEditable] = useState(false); 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,6 +30,14 @@ const CheckoutPage = () => {
         if (!hasAddress) {
           setIsAddressEditable(true);
         }
+        const hasPhone = data.userId.phone;
+
+        if(!hasPhone){
+          setIsPhoneEditable(true);
+        }
+        const calculatedTotalPrice = data.items.reduce((total,item)=> {
+          return total +(item.price * item.quantity);
+        },0) 
 
         // Convert province, district, ward codes to names
         const provinceName = provincesData[data.userId.province]?.name_with_type || data.userId.province;
@@ -44,6 +53,7 @@ const CheckoutPage = () => {
             district: districtName,
             ward: wardName,
           },
+          totalPrice:calculatedTotalPrice,
           cartId: cartId,
         });
       } catch (err) {
@@ -93,8 +103,11 @@ const CheckoutPage = () => {
           position: 'top-right',
           autoClose: 5000,
         });
-        navigate('/order-confirmation');
+        navigate('/profile');
       }
+
+    await  clearCart(billingData.userId._id);
+
     } catch (err) {
       toast.error('Checkout failed. Please try again.', {
         position: 'top-right',
@@ -111,6 +124,7 @@ const CheckoutPage = () => {
   if (!billingData) {
     return <p>Loading...</p>;
   }
+ 
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -126,12 +140,36 @@ const CheckoutPage = () => {
             className="w-full border p-2 rounded mb-4"
             readOnly
           />
-          <input
-            type="text"
-            value={billingData.userId.phone}
+                <input
+            type="number"
+            value={billingData.userId.phone || ''}  
             className="w-full border p-2 rounded mb-4"
- 
+            readOnly={!isPhoneEditable}  
+            onChange={(e) => {
+              const phoneValue = e.target.value;
+
+              // Kiểm tra nếu số ký tự nhập vào dưới hoặc bằng 11 số
+              if (isPhoneEditable && phoneValue.length <= 11) {
+                setBillingData({
+                  ...billingData,
+                  userId: { ...billingData.userId, phone: phoneValue },
+                });
+              }
+            }}
+            onBlur={(e) => {
+              const phoneValue = e.target.value;
+
+              // Hiển thị thông báo nếu số điện thoại không hợp lệ (dưới 10 hoặc trên 11 số)
+              if (phoneValue.length < 10 || phoneValue.length > 11) {
+                toast.error('Phone number incorrect format', {
+                  position: 'top-right',
+                  autoClose: 5000,
+                });
+              }
+            }}
           />
+
+
         </div>
 
         <div className="mb-6">
@@ -214,6 +252,7 @@ const CheckoutPage = () => {
               <div className="flex-1">
                 <p>{item.name}</p>
                 <p className="text-gray-600 text-sm">Size: {item.size}</p>
+                <p className="text-gray-600 text-sm">Size: {item.quantity}</p>
               </div>
               <p>{item.price.toLocaleString()} VND</p>
             </div>
